@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Xeconimy – The AI‑Powered Economy for Creators</title>
     <style>
-        /* Reset and base styles */
         * {
             margin: 0;
             padding: 0;
@@ -235,6 +234,21 @@
             box-shadow: 0 10px 20px rgba(79, 70, 229, 0.3);
         }
 
+        .success-message {
+            display: none;
+            text-align: center;
+            background: #ecfdf5;
+            border: 1px solid #10b981;
+            border-radius: 16px;
+            padding: 16px;
+            margin-top: 24px;
+        }
+
+        .success-message p {
+            color: #065f46;
+            margin-bottom: 0;
+        }
+
         .footer {
             text-align: center;
             padding: 40px 0;
@@ -242,7 +256,6 @@
             border-top: 1px solid #e5e7eb;
         }
 
-        /* Responsive */
         @media (max-width: 640px) {
             .hero h1 {
                 font-size: 2.25rem;
@@ -258,19 +271,16 @@
 </head>
 <body>
     <div class="container">
-        <!-- Header -->
         <header class="header">
             <div class="logo">Xeconimy</div>
             <div class="tagline">The AI‑Powered Economy for Creators</div>
         </header>
 
-        <!-- Hero -->
         <section class="hero">
             <h1>Where AI runs your business<br>so you can focus on what matters most.</h1>
             <p>Join the waitlist for early access.</p>
         </section>
 
-        <!-- Three features -->
         <section class="features">
             <div class="feature-card">
                 <div class="feature-icon">🛒</div>
@@ -302,7 +312,6 @@
         </section>
     </div>
 
-    <!-- How It Works -->
     <section class="how-it-works">
         <div class="container">
             <h2 class="section-title">How It Works</h2>
@@ -331,14 +340,13 @@
         </div>
     </section>
 
-    <!-- Waitlist Form -->
     <section class="waitlist">
         <div class="container">
             <div class="form-container">
                 <h2>Join the Waitlist</h2>
                 <p>Be the first to experience Xeconimy.</p>
 
-                <form id="waitlistForm" action="https://formspree.io/f/mbdzjzgw" method="POST">
+                <form id="waitlistForm">
                     <div class="form-group">
                         <label for="name">Name</label>
                         <input type="text" id="name" name="name" required>
@@ -356,7 +364,10 @@
                             <option value="shopper">Shopper / Early Adopter</option>
                         </select>
                     </div>
-                    <button type="submit">Join the Waitlist</button>
+                    <button type="submit" id="submitBtn">Join the Waitlist</button>
+                    <div id="successMessage" class="success-message">
+                        <p>🎉 You're on the list! You'll hear from us soon. Founder perks are locked in.</p>
+                    </div>
                 </form>
 
                 <p style="font-size:0.875rem; color:#9ca3af; margin-top:16px;">
@@ -366,11 +377,58 @@
         </div>
     </section>
 
-    <!-- Footer -->
     <footer class="footer">
         <div class="container">
             <p>&copy; 2026 Xeconimy. All rights reserved. Launching soon.</p>
         </div>
     </footer>
+
+    <script>
+        const form = document.getElementById('waitlistForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const successMsg = document.getElementById('successMessage');
+        const formspreeUrl = 'https://formspree.io/f/mbdzjzgw';
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            // Collect form data
+            const formData = new FormData(form);
+            const data = {
+                name: formData.get('name'),
+                email: formData.get('email'),
+                interest: formData.get('interest')
+            };
+
+            // Disable button and show loading
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Submitting...';
+
+            try {
+                const response = await fetch(formspreeUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                if (response.ok) {
+                    // Hide the form fields, show success message
+                    form.style.display = 'none';
+                    successMsg.style.display = 'block';
+                } else {
+                    alert('Something went wrong. Please try again.');
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Join the Waitlist';
+                }
+            } catch (error) {
+                alert('Network error. Please check your connection.');
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Join the Waitlist';
+            }
+        });
+    </script>
 </body>
 </html>
